@@ -6,6 +6,7 @@
 #include "1Wire/ds18x20.h"
 #include "sd/ff.h"
 #include "I2C/i2cmaster.h"
+#include "adc/adc.h"
 
 //Deklaracje funkcji
 
