@@ -56,12 +56,12 @@
 double gains[3];        // przelicznik do G
 char _buff[6] ;
 
-char writeTo(char device_address, char address, char val);
-void readFrom(char device_address, char address, int num, char buff[]);
+char Acc_writeTo(char device_address, char address, char val);
+void Acc_readFrom(char device_address, char address, int num, char buff[]);
 
-int powerOn(char device_address);
-void readAccel(char device_address, int *x, int *y, int *z);
-void get_Gxyz(char device_address, double *xyz);
+int Acc_powerOn(char device_address);
+void Acc_readAccel(char device_address, int *x, int *y, int *z);
+void Acc_get_Gxyz(char device_address, double *xyz);
 
 
 #endif /* ADXL345_ADXL345_H_ */
