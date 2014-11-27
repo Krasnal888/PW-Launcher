@@ -7,6 +7,7 @@
 #include "sd/ff.h"
 #include "I2C/i2cmaster.h"
 #include "adc/adc.h"
+#include "adxl345/adxl345.h"
 
 //Do zapisu na SD
 FATFS FatFs;	//Ustawienie systemu plików
@@ -21,8 +22,8 @@ uint8_t cel_fract_bits;	//Wartość po przecinku temperatury
 #define CISNIENIE1 ADC0
 #define CISNIENIE2 ADC1
 
-#define AKCELEROMETR1 (0x53 << 1)
-#define AKCELEROMETR2 (0x1D << 1)
+#define AKCELEROMETR1 (0x1D<<1)
+#define AKCELEROMETR2 (0x53<<1)
 
 //Deklaracje funkcji
 
@@ -30,15 +31,15 @@ uint8_t cel_fract_bits;	//Wartość po przecinku temperatury
 //Main
 int main(void){
 	ADC_init(); //init barometrow
-	Acc_powerOn(AKCELEROMETR1);
-	Acc_powerOn(AKCELEROMETR2);
+	Acc_turn_on(AKCELEROMETR1);
+	Acc_turn_on(AKCELEROMETR2);
 
 	czujniki_cnt = search_sensors();
 	UINT bw;	//Bajty zapisane
 	char bufor[32];
 
-	double akcelerometr1_odczyty[3];
-	double akcelerometr2_odczyty[3];
+	int akcelerometr1_odczyty[3];
+	int akcelerometr2_odczyty[3];
 
 	while(1)
 	{
@@ -47,9 +48,12 @@ int main(void){
 
 		int bar1 = ADC_read(CISNIENIE1);
 		int bar2 = ADC_read(CISNIENIE2);
-		DS18X20_start_meas( DS18X20_POWER_EXTERN, NULL ); // termometry
 		Acc_get_Gxyz(AKCELEROMETR1, akcelerometr1_odczyty);
 		Acc_get_Gxyz(AKCELEROMETR2, akcelerometr2_odczyty);
+
+		DS18X20_start_meas( DS18X20_POWER_EXTERN, NULL ); // termometry
+
+		_delay_ms(750);
 
 		sprintf(bufor,"A1 %f %f %f A2 %f %f %f",
 				akcelerometr1_odczyty[0], akcelerometr1_odczyty[1], akcelerometr1_odczyty[2],
