@@ -2,12 +2,17 @@
 #define TO_READ (6)        //num of chars we are going to read each time (two chars for each axis)
 
 char buff[TO_READ] ;    //6 chars buffer for saving data read from the device
+#define ADXL345_RANGE2G 0x00
+#define ADXL345_FULLRANGE 0 //1 to enable 0 to disable
 
 void Acc_turn_on(int device)
 {
 	writeTo(device, 0x2D, 0);
 	writeTo(device, 0x2D, 16);
 	writeTo(device, 0x2D, 8);
+
+	uint8_t range = ADXL345_RANGE2G | (ADXL345_FULLRANGE<<3);
+	writeTo(device, 0x31, range);
 }
 
 void Acc_read(int device, int *x, int *y, int *z)
@@ -49,5 +54,11 @@ void readFrom(int device, char address, int num, char buff[]) {
 
 	i2c_stop();
 }
+
+void Acc_get_Gxyz(int device, int *xyz)
+{
+	Acc_read(device, xyz, xyz + 1, xyz + 2);
+}
+
 
 
