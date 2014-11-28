@@ -1,7 +1,7 @@
 #include "../I2C/i2cmaster.h"
 #define TO_READ (6)        //num of chars we are going to read each time (two chars for each axis)
-
 char buff[TO_READ] ;    //6 chars buffer for saving data read from the device
+
 #define ADXL345_RANGE2G 0x00
 #define ADXL345_FULLRANGE 0 //1 to enable 0 to disable
 

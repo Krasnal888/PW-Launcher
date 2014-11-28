@@ -5,9 +5,13 @@
 //Załączone zewnętrzne biblioteki
 #include "1Wire/ds18x20.h"
 #include "sd/ff.h"
-#include "I2C/i2cmaster.h"
 #include "adc/adc.h"
 #include "adxl345/adxl345.h"
+
+/*
+ * PD6 - 1Wire
+ * ADC0, ADC2 - barometry
+ */
 
 //Do zapisu na SD
 FATFS FatFs;	//Ustawienie systemu plików
@@ -20,10 +24,9 @@ uint8_t cel;		//Temperatura
 uint8_t cel_fract_bits;	//Wartość po przecinku temperatury
 
 #define CISNIENIE1 ADC0
-#define CISNIENIE2 ADC1
-
-#define AKCELEROMETR1 (0x1D<<1)
-#define AKCELEROMETR2 (0x53<<1)
+#define CISNIENIE2 ADC2
+#define AKCELEROMETR1 (0x1D<<1) // 1 na SD0
+#define AKCELEROMETR2 (0x53<<1) // 0 na SD0
 
 //Deklaracje funkcji
 
@@ -55,16 +58,16 @@ int main(void){
 
 		_delay_ms(750);
 
-		sprintf(bufor,"A1 %f %f %f A2 %f %f %f",
+		sprintf(bufor,"A1,%d,%d,%d,A2,%d,%d,%d",
 				akcelerometr1_odczyty[0], akcelerometr1_odczyty[1], akcelerometr1_odczyty[2],
 				akcelerometr2_odczyty[0], akcelerometr2_odczyty[1], akcelerometr2_odczyty[2]);
 		f_lseek(&Dump,f_size(&Dump));
 		f_write(&Dump,bufor,sizeof(bufor),&bw);
 		f_sync(&Dump);
 
-		sprintf(bufor,"C1 %d C2 %d",
-						bar1,
-						bar2);
+		sprintf(bufor,",C1,%d,C2,%d",
+				bar1,
+				bar2);
 		f_lseek(&Dump,f_size(&Dump));
 		f_write(&Dump,bufor,sizeof(bufor),&bw);
 		f_sync(&Dump);
@@ -74,14 +77,14 @@ int main(void){
 			if(DS18X20_OK == DS18X20_read_meas(gSensorIDs[sensor_numer], &subzero, &cel, &cel_fract_bits))
 			{
 				if (subzero == 0){
-					sprintf(bufor," +%d,%d ",cel,cel_fract_bits);
+					sprintf(bufor,",+%d.%d",cel,cel_fract_bits);
 					f_lseek(&Dump,f_size(&Dump));
 					f_write(&Dump,bufor,7,&bw);
 					f_sync(&Dump);
 					_delay_ms(20);
 				}
 				if (subzero == 1){
-					sprintf(bufor," -%d,%d ",cel,cel_fract_bits);
+					sprintf(bufor,",-%d.%d",cel,cel_fract_bits);
 					f_lseek(&Dump,f_size(&Dump));
 					f_write(&Dump,bufor,7,&bw);
 					f_sync(&Dump);

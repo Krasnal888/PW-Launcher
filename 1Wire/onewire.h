@@ -24,10 +24,10 @@
 /*******************************************/
 
 /* Wyb�r PINu oraz PORTu na magistral� 1Wire */
-#define OW_PIN  PB5
-#define OW_IN   PINB
-#define OW_OUT  PORTB
-#define OW_DDR  DDRB
+#define OW_PIN  PD6
+#define OW_IN   PIND
+#define OW_OUT  PORTD
+#define OW_DDR  DDRD
 
 
 
