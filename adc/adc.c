@@ -12,8 +12,8 @@ char adc_on = 0;
 void ADC_init()
 {
 	ADCSRA = (1<<ADEN) //wlaczenie przetwornika
-	         |(1<<ADPS0) // ustawienie preskalera na 8 (1000kHz / 8 = 125kHz)
-	         |(1<<ADPS1);
+	         |(1<<ADPS1)
+			 |(1<<ADPS2);
 
 	ADMUX  =    (1<<REFS1) | (1<<REFS0); // ref 2,56V/1,2V, kondensator na AREF
 
